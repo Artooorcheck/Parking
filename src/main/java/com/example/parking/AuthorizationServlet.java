@@ -2,6 +2,7 @@ package com.example.parking;
 
 import java.io.*;
 
+import Models.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -15,19 +16,18 @@ public class AuthorizationServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
-
+        request.setAttribute("user", new User());
         // Hello
-        PrintWriter out = response.getWriter();
-        out.println("<html><body>");
-        out.println("<h1>" + message + "</h1>");
-        out.println("</body></html>");
+        request.getRequestDispatcher("authorization.jsp").forward(request,response);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        System.out.println(req.getParameter("userName"));
+        System.out.println(req.getParameter("login"));
+        System.out.println(req.getParameter("password"));
     }
 
     public void destroy() {
