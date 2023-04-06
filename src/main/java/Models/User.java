@@ -2,6 +2,7 @@ package Models;
 
 public class User {
     private String name;
+    private String card;
     private String login;
     private String password;
 
@@ -29,6 +30,14 @@ public class User {
         this.password = password;
     }
 
+    public String getCard() {
+        return card;
+    }
+
+    public void setCard(String card) {
+        this.card = card;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -37,4 +46,5 @@ public class User {
                 ", password='" + password + '\'' +
                 '}';
     }
+
 }
