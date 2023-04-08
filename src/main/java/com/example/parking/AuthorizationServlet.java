@@ -15,11 +15,6 @@ import java.util.TreeMap;
 
 @WebServlet(name = "authorizationServlet", value = "/authorization-servlet")
 public class AuthorizationServlet extends HttpServlet {
-    private String message;
-
-    public void init() {
-        message = "Hello World!";
-    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -29,21 +24,22 @@ public class AuthorizationServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Map<String, Object> params = new TreeMap<>();
-        params.put("login", req.getParameter("login"));
+        var login = req.getParameter("login");
+        params.put("login", login);
         params.put("password", req.getParameter("password"));
         var query = new LogInQuery();
         query.setParams(params);
-        query.execute();
         try {
-            System.out.println(query.getResult());
-        }
-        catch (SQLException e) {
+            query.execute();
+            if (query.getResult()) {
+                var session = req.getSession();
+                session.setAttribute("login", login);
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public void destroy() {
+        resp.sendRedirect(req.getContextPath() + "/route-servlet");
     }
 }

@@ -13,4 +13,6 @@
         </dl>
         <button type="submit">Save</button>
     </form>
+    <input type="button" value="Sign up" name="Sign up"
+           onclick="location.href = '/Parking_war_exploded/registration-servlet'" />
 </section>

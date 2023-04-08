@@ -21,4 +21,6 @@
         </dl>
         <button type="submit">Save</button>
     </form>
+    <input type="button" value="Sign in" name="Sign in"
+           onclick="location.href = '/Parking_war_exploded/authorization-servlet'" />
 </section>

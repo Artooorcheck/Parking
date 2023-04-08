@@ -23,7 +23,7 @@ public class RegistrationServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Map<String, Object> params = new TreeMap<>();
         params.put("userName", req.getParameter("userName"));
         params.put("cardNumber", req.getParameter("cardNumber"));
@@ -32,5 +32,6 @@ public class RegistrationServlet extends HttpServlet {
         var query = new SignUpQuery();
         query.setParams(params);
         query.execute();
+        resp.sendRedirect(req.getContextPath() + "/route-servlet");
     }
 }
