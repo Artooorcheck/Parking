@@ -1,5 +1,6 @@
-package com.example.parking;
+package Servlets;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,13 +12,13 @@ import java.io.IOException;
 public class RouteServlet extends HttpServlet {
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         var session = request.getSession();
         var login = session.getAttribute("login");
         var page = "/authorization-servlet";
         if (login != null) {
             page = "/userPlaces-servlet";
         }
-        response.sendRedirect(request.getContextPath() + page);
+        request.getRequestDispatcher(page).forward(request, response);
     }
 }

@@ -11,7 +11,7 @@
             <dt>Password: </dt>
             <dd> <input type="password" name="password" value="${user.password}" placeholder="${user.password}"></dd>
         </dl>
-        <button type="submit">Save</button>
+        <button type="submit">Log in</button>
     </form>
     <input type="button" value="Sign up" name="Sign up"
            onclick="location.href = '/Parking_war_exploded/registration-servlet'" />

@@ -1,4 +1,4 @@
-package com.example.parking;
+package Servlets;
 
 import SQLQuery.UserPlacesQuery;
 import jakarta.servlet.ServletException;

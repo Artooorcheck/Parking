@@ -1,4 +1,4 @@
-package com.example.parking;
+package Servlets;
 
 import Models.User;
 import SQLQuery.LogInQuery;
@@ -18,6 +18,7 @@ public class AuthorizationServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.getSession().removeAttribute("login");
         response.setContentType("text/html");
         request.setAttribute("user", new User());
         request.getRequestDispatcher("authorization.jsp").forward(request, response);

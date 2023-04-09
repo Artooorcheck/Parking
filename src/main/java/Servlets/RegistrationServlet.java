@@ -1,4 +1,4 @@
-package com.example.parking;
+package Servlets;
 
 import Models.User;
 import SQLQuery.SignUpQuery;

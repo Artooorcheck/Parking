@@ -9,19 +9,44 @@
         </tr>
         <c:forEach items="${busyPlaces}" var="item">
             <tr>
-                <td id="viewA<c:out value="${item.placeId}" />" >
+                <td>
                     <c:out value="${item.parkAddress}" />
                 </td>
-                <td id="viewB<c:out value="${item.placeId}" />" >
+                <td>
                     <c:out value="${item.placeNumber}" />
                 </td>
-                <td id="viewC<c:out value="${item.placeId}" />" >
+                <td>
                     <c:out value="${item.carId}" />
+                </td>
+                <td>
+                    <button type="submit" id="<c:out value="${item.placeId}" />">Remove</button>
                 </td>
             </tr>
         </c:forEach>
+        <tr>
+            <td>
+                <select>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" placeholder="A000AA111">
+            </td>
+            <td>
+                <button type="submit">Add</button>
+            </td>
+        </tr>
     </table>
 
-    <input type="button" value="Sign in" name="Sign in"
+    <input type="button" value="Sign out" name="Sign out"
            onclick="location.href = '/Parking_war_exploded/authorization-servlet'" />
 </section>

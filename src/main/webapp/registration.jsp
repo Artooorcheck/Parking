@@ -19,7 +19,7 @@
             <dt>Password: </dt>
             <dd> <input type="password" name="password" value="${user.password}" placeholder="${user.password}"></dd>
         </dl>
-        <button type="submit">Save</button>
+        <button type="submit">Create</button>
     </form>
     <input type="button" value="Sign in" name="Sign in"
            onclick="location.href = '/Parking_war_exploded/authorization-servlet'" />

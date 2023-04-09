@@ -6,6 +6,6 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<jsp:include page="/authorization-servlet" />
+<jsp:include page="/route-servlet" />
 </body>
 </html>

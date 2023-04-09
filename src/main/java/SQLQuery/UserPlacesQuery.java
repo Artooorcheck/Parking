@@ -11,12 +11,10 @@ import java.util.Map;
 public class UserPlacesQuery extends ReadQuery<List<ParkPlace>> {
     @Override
     public void setParams(Map<String, Object> params) {
-        sql = "SELECT pp.\"Place_id\", pp.\"Place_number\", up.\"Car_id\", p.\"Park_adress\" FROM \"user_place\" up\n" +
-                "JOIN \"user\" u on u.\"User_id\" = up.\"User_id\"\n" +
-                "JOIN \"park_place\" pp on pp.\"Place_id\"=up.\"Place_id\"\n" +
-                "JOIN \"parking\" p on p.\"Parking_id\" = pp.\"Park_id\"\n" +
+        sql = "SELECT pp.\"Place_id\", pp.\"Place_number\", pp.\"Car_id\", p.\"Park_address\" FROM \"park_place\" pp\n" +
+                "JOIN \"user\" u on u.\"User_id\" = pp.\"User_id\"\n" +
+                "JOIN \"parking\" p on p.\"Parking_id\" = pp.\"Park_id\"" +
                 "WHERE u.\"Login\" = '"+ params.get("login")+"'";
-        System.out.println(sql);
     }
 
     @Override
@@ -26,7 +24,7 @@ public class UserPlacesQuery extends ReadQuery<List<ParkPlace>> {
             var place = new ParkPlace();
             place.setCarId(result.getString("Car_id"));
             place.setPlaceId(result.getInt("Place_id"));
-            place.setParkAddress(result.getString("Park_adress"));
+            place.setParkAddress(result.getString("Park_address"));
             place.setPlaceNumber(result.getInt("Place_number"));
             places.add(place);
         }
