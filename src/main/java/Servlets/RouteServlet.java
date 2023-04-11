@@ -17,7 +17,7 @@ public class RouteServlet extends HttpServlet {
         var login = session.getAttribute("login");
         var page = "/authorization-servlet";
         if (login != null) {
-            page = "/userPlaces-servlet";
+            page = "profile.jsp";
         }
         request.getRequestDispatcher(page).forward(request, response);
     }

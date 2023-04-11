@@ -1,14 +1,14 @@
 package SQLQuery;
 
 import Models.Park;
-import SQLQuery.CRUDTemplates.ReadQuery;
+import SQLQuery.CRUDTemplates.GetDataQuery;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AvailibleParkQuery extends ReadQuery<List<Park>> {
+public class AvailibleParkQuery extends GetDataQuery<List<Park>> {
 
     public AvailibleParkQuery() {
         sql = "SELECT DISTINCT p.\"Parking_id\", p.\"Park_address\" FROM \"park_place\" pp\n" +

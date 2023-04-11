@@ -3,14 +3,14 @@
 <script type="text/javascript" src="JS/jquery-3.6.4.min.js"></script>
 <script type="text/javascript" src="JS/park-car.js"></script>
 <section>
-    <table>
+    <table id="car_list">
         <tr>
             <th>Address</th>
             <th>Place</th>
             <th>Car Identifier</th>
         </tr>
         <c:forEach items="${busyPlaces}" var="item">
-            <tr>
+            <tr class="row">
                 <td>
                     <c:out value="${item.parkAddress}" />
                 </td>
@@ -26,26 +26,10 @@
             </tr>
         </c:forEach>
         <tr>
-            <td>
-                <select id="park_id">
-                    <option value="20">Option 1</option>
-                    <option value="24">Option 2</option>
-                    <option value="35">Option 3</option>
-                </select>
-            </td>
-            <td>
-                <select id="park_place">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                </select>
-            </td>
-            <td>
-                <input id="car_id" type="text" placeholder="A000AA111">
-            </td>
-            <td>
-                <button type="submit">Add</button>
-            </td>
+            <td><select id="park_id" onchange="getPlaces()"></select></td>
+            <td><select id="park_place"></select></td>
+            <td><input id="car_id" type="text" placeholder="A000AA111"></td>
+            <td><button type="submit" id="set_button" onclick="leaveCar()">Add</button></td>
         </tr>
     </table>
 

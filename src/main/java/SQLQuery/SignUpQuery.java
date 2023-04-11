@@ -1,10 +1,10 @@
 package SQLQuery;
 
-import SQLQuery.CRUDTemplates.CreateQuery;
+import SQLQuery.CRUDTemplates.SetDataQuery;
 
 import java.util.Map;
 
-public class SignUpQuery extends CreateQuery {
+public class SignUpQuery extends SetDataQuery {
 
     @Override
     public void setParams(Map<String, Object> params) {

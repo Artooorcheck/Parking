@@ -1,14 +1,14 @@
 package SQLQuery;
 
 import Models.ParkPlace;
-import SQLQuery.CRUDTemplates.ReadQuery;
+import SQLQuery.CRUDTemplates.GetDataQuery;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FreePlacesQuery extends ReadQuery<List<ParkPlace>> {
+public class FreePlacesQuery extends GetDataQuery<List<ParkPlace>> {
     @Override
     public void setParams(Map params) {
         sql = "SELECT DISTINCT \"Place_id\", \"Place_number\" FROM \"park_place\"\n" +

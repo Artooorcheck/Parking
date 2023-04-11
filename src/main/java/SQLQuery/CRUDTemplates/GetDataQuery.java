@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-public abstract class ReadQuery<TResult> implements ISQLQuery{
+public abstract class GetDataQuery<TResult> implements ISQLQuery{
 
     protected String sql;
     protected ResultSet result;

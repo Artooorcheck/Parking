@@ -1,14 +1,14 @@
 package SQLQuery;
 
 import Models.ParkPlace;
-import SQLQuery.CRUDTemplates.ReadQuery;
+import SQLQuery.CRUDTemplates.GetDataQuery;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class UserPlacesQuery extends ReadQuery<List<ParkPlace>> {
+public class UserPlacesQuery extends GetDataQuery<List<ParkPlace>> {
     @Override
     public void setParams(Map<String, Object> params) {
         sql = "SELECT pp.\"Place_id\", pp.\"Place_number\", pp.\"Car_id\", p.\"Park_address\" FROM \"park_place\" pp\n" +

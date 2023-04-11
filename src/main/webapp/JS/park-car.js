@@ -43,7 +43,78 @@ function getPlaces() {
     });
 }
 
+function leaveCar() {
+    $.ajax({
+        method : 'post',
+        url : 'userPlaces-servlet',
+        data : {
+            type: 'add',
+            placeId: $('#park_place').val(),
+            carId: $('#car_id').val()
+        },
+        success: getCarsUser
+    });
+}
+
+function removeCar(placeId) {
+    $.ajax({
+        method : 'post',
+        url : 'userPlaces-servlet',
+        data : {
+            type: 'delete',
+            placeId: placeId
+        },
+        success: getCarsUser
+    });
+}
+
+function getHeader() {
+    return '<tr>' +
+                '<th>Address</th>' +
+                '<th>Place</th>' +
+                '<th>Car Identifier</th>' +
+            '</tr>'
+}
+
+function createRow(parkAddress, placeNumber, carId, placeId) {
+    return '<tr name="row">' +
+                '<td>'+ parkAddress +'</td>'+
+                '<td>'+ placeNumber +'</td>' +
+                '<td>'+ carId +'</td>' +
+                '<td> <button type="submit" id="' + placeId + '" onclick="removeCar(' + placeId + ')">Remove</button> </td>' +
+            '</tr>';
+}
+
+function getFooter() {
+    return '<tr>' +
+                '<td><select id="park_id" onchange="getPlaces()"></select></td>' +
+                '<td><select id="park_place"></select></td>' +
+                '<td><input id="car_id" type="text" placeholder="А111AA111"></td>' +
+                '<td><button type="submit" id="set_button" onclick="leaveCar()">Add</button></td>' +
+            '</tr>'
+}
+
+function getCarsUser() {
+    $.ajax({
+        method : 'get',
+        url : 'userPlaces-servlet',
+        data : {
+        },
+        success : function(responseText) {
+            let resParks = JSON.parse(responseText);
+            let table = $('#car_list');
+            //table.children().remove();
+            let innerHTML = getHeader();
+            for(let i =0; i<resParks.length; i++) {
+                innerHTML += createRow(resParks[i].parkAddress, resParks[i].placeNumber, resParks[i].carId, resParks[i].placeId)
+            }
+            innerHTML += getFooter();
+            table.html(innerHTML);
+            getAllParks();
+        }
+    });
+}
+
 $(document).ready(function() {
-    $('#park_id').change(getPlaces);
-    getAllParks();
+    getCarsUser();
 });

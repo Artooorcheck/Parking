@@ -3,7 +3,7 @@ package Servlets;
 import Models.Park;
 import Models.ParkPlace;
 import SQLQuery.AvailibleParkQuery;
-import SQLQuery.CRUDTemplates.ReadQuery;
+import SQLQuery.CRUDTemplates.GetDataQuery;
 import SQLQuery.FreePlacesQuery;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,7 +25,7 @@ public class UpdateFieldServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         var name = request.getParameter("fieldName");
         System.out.println(name);
-        ReadQuery query = null;
+        GetDataQuery query = null;
         if (name.equals("getPlaces")) {
             query = new FreePlacesQuery();
             var params = new HashMap<String, Object>();
@@ -39,7 +39,7 @@ public class UpdateFieldServlet extends HttpServlet {
         loadData(query, response.getWriter());
     }
 
-    private void loadData(ReadQuery query, PrintWriter writer) {
+    private void loadData(GetDataQuery query, PrintWriter writer) {
         try {
             query.execute();
             var result = query.getResult();

@@ -5,7 +5,7 @@ import SQLQuery.Interface.ISQLQuery;
 import java.sql.SQLException;
 import java.util.Map;
 
-public abstract class CreateQuery implements ISQLQuery {
+public abstract class SetDataQuery implements ISQLQuery {
 
     protected String sql;
 
