@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -25,13 +26,17 @@ public class RegistrationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Map<String, Object> params = new TreeMap<>();
-        params.put("userName", req.getParameter("userName"));
-        params.put("cardNumber", req.getParameter("cardNumber"));
-        params.put("login", req.getParameter("login"));
-        params.put("password", req.getParameter("password"));
+        params.put("Name", req.getParameter("userName"));
+        params.put("Card_number", req.getParameter("cardNumber"));
+        params.put("Login", req.getParameter("login"));
+        params.put("Password", req.getParameter("password"));
         var query = new SignUpQuery();
         query.setParams(params);
-        query.execute();
+        try {
+            query.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         resp.sendRedirect(req.getContextPath() + "/route-servlet");
     }
 }

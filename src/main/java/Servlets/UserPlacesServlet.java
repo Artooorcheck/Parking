@@ -24,7 +24,7 @@ public class UserPlacesServlet extends HttpServlet {
         var login = session.getAttribute("login");
         var query = new UserPlacesQuery();
         var params = new HashMap<String, Object>();
-        params.put("login", login);
+        params.put("Login", login);
         query.setParams(params);
 
         try {
@@ -41,23 +41,26 @@ public class UserPlacesServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var params = new HashMap<String, Object>();
-        var placeId =  req.getParameter("placeId");
+        var placeId = req.getParameter("placeId");
+        var session = req.getSession();
+        var login = session.getAttribute("login");
 
         var type = req.getParameter("type");
         params.put("Place_id", placeId);
+        params.put("Login", login);
         SetDataQuery query = null;
-        if(type.equals("add")) {
-            var session = req.getSession();
-            var login = session.getAttribute("login");
+        if (type.equals("add")) {
             var carId = req.getParameter("carId");
             query = new LeaveCarQuery();
-            params.put("Login", login);
             params.put("Car_id", carId);
-        }
-        else if(type.equals("delete")) {
+        } else if (type.equals("delete")) {
             query = new RemoveCarQuery();
         }
         query.setParams(params);
-        query.execute();
+        try {
+            query.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

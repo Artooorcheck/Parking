@@ -1,6 +1,7 @@
 package Servlets;
 
 import Models.User;
+import SQLQuery.DeleteUserQuery;
 import SQLQuery.LogInQuery;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -28,8 +30,8 @@ public class AuthorizationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Map<String, Object> params = new TreeMap<>();
         var login = req.getParameter("login");
-        params.put("login", login);
-        params.put("password", req.getParameter("password"));
+        params.put("Login", login);
+        params.put("Password", req.getParameter("password"));
         var query = new LogInQuery();
         query.setParams(params);
         try {
@@ -42,5 +44,24 @@ public class AuthorizationServlet extends HttpServlet {
             e.printStackTrace();
         }
         resp.sendRedirect(req.getContextPath() + "/route-servlet");
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        var session = req.getSession();
+        var login = session.getAttribute("login");
+        if(login == null || login.equals("")) {
+            return;
+        }
+        var query = new DeleteUserQuery();
+        var params = new HashMap<String, Object>();
+        params.put("Login", login);
+        query.setParams(params);
+        try {
+            query.execute();
+            session.removeAttribute("login");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

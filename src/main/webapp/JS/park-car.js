@@ -115,6 +115,17 @@ function getCarsUser() {
     });
 }
 
+function deleteUser() {
+    $.ajax({
+        method: 'delete',
+        url : 'authorization-servlet',
+        data: {},
+        success: function(data){
+            window.location = '/Parking_war_exploded/route-servlet';
+        }
+    })
+}
+
 $(document).ready(function() {
     getCarsUser();
 });

@@ -10,6 +10,6 @@ public class SignUpQuery extends SetDataQuery {
     public void setParams(Map<String, Object> params) {
         sql = "INSERT INTO public.\"user\"(\"User_id\", \"Name\", \"Card_number\", \"Login\", \"Password\") " +
                 "VALUES((SELECT COALESCE(MAX(\"User_id\"), 0)+1 FROM \"user\"), '" +
-                params.get("userName") + "', '" + params.get("cardNumber") + "', '" + params.get("login") + "', '" + params.get("password") + "')";
+                params.get("Name") + "', '" + params.get("Card_number") + "', '" + params.get("Login") + "', '" + params.get("Password") + "')";
     }
 }

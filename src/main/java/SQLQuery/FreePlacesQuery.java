@@ -12,7 +12,8 @@ public class FreePlacesQuery extends GetDataQuery<List<ParkPlace>> {
     @Override
     public void setParams(Map params) {
         sql = "SELECT DISTINCT \"Place_id\", \"Place_number\" FROM \"park_place\"\n" +
-                "WHERE \"User_id\" IS NULL AND \"Park_id\" = " + params.get("Park_id");
+                "WHERE \"User_id\" IS NULL AND \"Park_id\" = " + params.get("Park_id") +
+                "ORDER BY \"Place_id\"";
     }
 
     @Override

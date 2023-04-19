@@ -5,22 +5,17 @@ import SQLQuery.Interface.ISQLQuery;
 import java.sql.SQLException;
 import java.util.Map;
 
-public abstract class SetDataQuery implements ISQLQuery {
+public abstract class SetDataQuery extends DBConnection implements ISQLQuery {
 
     protected String sql;
 
     @Override
-    public void execute()
-    {
-        try {
-            var connection = DBConnection
-                    .getConnection();
-            var stmt = connection.createStatement();
-            connection.prepareStatement(sql);
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public void execute() throws SQLException {
+        var connection = getConnection();
+        var stmt = connection.createStatement();
+        connection.prepareStatement(sql);
+        stmt.executeUpdate(sql);
+        closeConnection();
     }
 
     @Override

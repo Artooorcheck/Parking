@@ -11,6 +11,5 @@ public class LeaveCarQuery extends SetDataQuery {
                 "SET \"User_id\" = (SELECT \"User_id\" FROM \"user\" WHERE \"Login\" = '"+ params.get("Login")+"' FETCH FIRST 1 ROWS ONLY), " +
                 "\"Car_id\" = '" + params.get("Car_id") + "' " +
                 "WHERE \"Place_id\" = " + params.get("Place_id");
-        System.out.println(sql);
     }
 }

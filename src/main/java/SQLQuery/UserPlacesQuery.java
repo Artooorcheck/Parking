@@ -13,8 +13,8 @@ public class UserPlacesQuery extends GetDataQuery<List<ParkPlace>> {
     public void setParams(Map<String, Object> params) {
         sql = "SELECT pp.\"Place_id\", pp.\"Place_number\", pp.\"Car_id\", p.\"Park_address\" FROM \"park_place\" pp\n" +
                 "JOIN \"user\" u on u.\"User_id\" = pp.\"User_id\"\n" +
-                "JOIN \"parking\" p on p.\"Parking_id\" = pp.\"Park_id\"" +
-                "WHERE u.\"Login\" = '"+ params.get("login")+"'";
+                "JOIN \"parking\" p on p.\"Parking_id\" = pp.\"Park_id\" " +
+                "WHERE u.\"Login\" = '"+ params.get("Login")+"'";
     }
 
     @Override

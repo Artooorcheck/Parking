@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AvailibleParkQuery extends GetDataQuery<List<Park>> {
+public class AvailableParkQuery extends GetDataQuery<List<Park>> {
 
-    public AvailibleParkQuery() {
+    public AvailableParkQuery() {
         sql = "SELECT DISTINCT p.\"Parking_id\", p.\"Park_address\" FROM \"park_place\" pp\n" +
                 "JOIN \"parking\" p on p.\"Parking_id\" = pp.\"Park_id\"\n" +
                 "WHERE pp.\"User_id\" IS NULL";

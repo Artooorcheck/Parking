@@ -2,7 +2,7 @@ package Servlets;
 
 import Models.Park;
 import Models.ParkPlace;
-import SQLQuery.AvailibleParkQuery;
+import SQLQuery.AvailableParkQuery;
 import SQLQuery.CRUDTemplates.GetDataQuery;
 import SQLQuery.FreePlacesQuery;
 import jakarta.servlet.ServletException;
@@ -34,7 +34,7 @@ public class UpdateFieldServlet extends HttpServlet {
             query.setParams(params);
         }
         if (name.equals("getParks")) {
-            query = new AvailibleParkQuery();
+            query = new AvailableParkQuery();
         }
         loadData(query, response.getWriter());
     }

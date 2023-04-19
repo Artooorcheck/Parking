@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-public abstract class GetDataQuery<TResult> implements ISQLQuery{
+public abstract class GetDataQuery<TResult> extends DBConnection implements ISQLQuery{
 
     protected String sql;
     protected ResultSet result;
@@ -16,15 +16,11 @@ public abstract class GetDataQuery<TResult> implements ISQLQuery{
     public abstract void setParams(Map<String, Object> params);
 
     @Override
-    public void execute()
-    {
-        try{
-            var connection = DBConnection.getConnection();
-            var stmt = connection.createStatement();
-            result = stmt.executeQuery(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void execute() throws SQLException {
+        var connection = getConnection();
+        var stmt = connection.createStatement();
+        result = stmt.executeQuery(sql);
+        closeConnection();
     }
 
     public abstract TResult getResult() throws SQLException;
