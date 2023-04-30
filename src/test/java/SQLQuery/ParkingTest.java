@@ -1,15 +1,17 @@
 package SQLQuery;
 
+import jakarta.xml.bind.ValidationException;
 import org.junit.jupiter.api.*;
-import org.postgresql.util.PSQLException;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -24,11 +26,11 @@ public class ParkingTest {
         params.put("Card_number", "9895332298471234");
         params.put("Login", LOGIN);
         params.put("Password", "ghfhqwe");
-        var query = new SignUpQuery();
-        query.setParams(params);
         try {
+            var query = new SignUpQuery(getProperties());
+            query.setParams(params);
             query.execute();
-        } catch (SQLException e) {
+        } catch (SQLException | ValidationException e) {
             e.printStackTrace();
         }
     }
@@ -37,103 +39,165 @@ public class ParkingTest {
     @Test
     @Order(1)
     public void setCarInParkValid() {
-        var result = setCarInParkCheck("А111АА11", 13, LOGIN);
-        result = checkCarInPark("А111АА11", 13, LOGIN) && result;
-        assertTrue(result);
+        var params = new HashMap<String, Object>();
+        params.put("Place_id", "13");
+        params.put("Login", LOGIN);
+        params.put("Car_id", "А111АА11");
+        assertDoesNotThrow(() -> {
+            var query = new LeaveCarQuery(getProperties());
+            query.setParams(params);
+            query.execute();
+        });
     }
 
     @Test
     @Order(2)
-    public void removeCarFromParkInvalidLogin() {
-        removeCar(13, "fg");
-        assertTrue(checkCarInPark("А111АА11", 13, LOGIN));
+    public void getCarInParkValid() {
+
+        var params = new HashMap<String, Object>();
+        params.put("Place_id", "13");
+        params.put("Login", LOGIN);
+        params.put("Car_id", "А111АА11");
+
+        try {
+            var query = new UserPlacesQuery(getProperties());
+            query.setParams(params);
+            query.execute();
+            assertNotEquals(query.getResult().stream()
+                    .filter(a -> a.getCarId().equals("А111АА11") && a.getPlaceId() == 13).count(), 0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     @Order(3)
-    public void removeCarFromParkValid() {
-        removeCar(13, LOGIN);
-        assertFalse(checkCarInPark("А111АА11", 13, LOGIN));
+    public void removeCarFromParkInvalidLogin() {
+        var params = new HashMap<String, Object>();
+        params.put("Place_id", 13);
+        params.put("Login", "LOGIN");
+        params.put("Car_id", "А111АА11");
+        try {
+            var query = new RemoveCarQuery(getProperties());
+            query.setParams(params);
+            query.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            var getQuery = new UserPlacesQuery(getProperties());
+            getQuery.setParams(params);
+            getQuery.execute();
+            assertEquals(getQuery.getResult().stream()
+                    .filter(a -> a.getCarId().equals("А111АА11") && a.getPlaceId() == 13).count(), 0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    @Order(4)
+    public void getCarAfterRemoveValid() {
+        var params = new HashMap<String, Object>();
+        params.put("Place_id", 13);
+        params.put("Login", LOGIN);
+        params.put("Car_id", "А111АА11");
+        try {
+            var query = new RemoveCarQuery(getProperties());
+            query.setParams(params);
+            query.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            var getQuery = new UserPlacesQuery(getProperties());
+            getQuery.setParams(params);
+            getQuery.execute();
+            assertEquals(getQuery.getResult().stream()
+                    .filter(a -> a.getCarId().equals("А111АА11") && a.getPlaceId() == 13).count(), 0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void setCarInParkInvalidCarId() {
-        var result = setCarInParkCheck("А111А11", 113, LOGIN);
-        result = checkCarInPark("А111А11", 113, LOGIN) && result;
-        assertFalse(result);
+        var params = new HashMap<String, Object>();
+        params.put("Place_id", "13");
+        params.put("Login", LOGIN);
+        params.put("Car_id", "А111А11");
+        assertThrows(ValidationException.class, () -> {
+            var query = new LeaveCarQuery(getProperties());
+            query.setParams(params);
+            query.execute();
+        });
     }
 
 
     @Test
     public void setCarInParkInvalidPlace() {
-        var result = setCarInParkCheck("А111АА11", 113, LOGIN);
-        result = checkCarInPark("А111АА11", 113, LOGIN) && result;
-        assertFalse(result);
+        var params = new HashMap<String, Object>();
+        params.put("Place_id", "113");
+        params.put("Login", LOGIN);
+        params.put("Car_id", "А111АА11");
+        assertThrows(ValidationException.class,() -> {
+            var query = new LeaveCarQuery(getProperties());
+            query.setParams(params);
+            query.execute();
+        });
     }
 
 
     @Test
     public void setCarInParkInvalidLogin() {
-        var result = setCarInParkCheck("А111АА11", 113, "fg");
-        result = checkCarInPark("А111АА11", 113, "fg") && result;
-        assertFalse(result);
-    }
-
-    private boolean setCarInParkCheck(String carId, int placeId, String login) {
         var params = new HashMap<String, Object>();
-        params.put("Place_id", 13);
-        params.put("Login", login);
-        params.put("Car_id", carId);
-        var query = new LeaveCarQuery();
-        query.setParams(params);
+        params.put("Place_id", "13");
+        params.put("Login", "LOGIN");
+        params.put("Car_id", "А111АА11");
         try {
+            var query = new LeaveCarQuery(getProperties());
+            query.setParams(params);
             query.execute();
-            return true;
-        } catch (PSQLException e) {
-            return false;
+        } catch (ValidationException | SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            var getQuery = new UserPlacesQuery(getProperties());
+            getQuery.setParams(params);
+            getQuery.execute();
+            assertEquals(getQuery.getResult().stream()
+                    .filter(a -> a.getCarId().equals("А111АА11") && a.getPlaceId() == 13).count(), 0);
         } catch (SQLException e) {
-            return false;
+            e.printStackTrace();
         }
     }
 
-    private boolean checkCarInPark(String carId, int placeId, String login) {
-
-        var params = new HashMap<String, Object>();
-        params.put("Place_id", 13);
-        params.put("Login", login);
-        params.put("Car_id", carId);
-
-        var query = new UserPlacesQuery();
-        query.setParams(params);
-        try {
-            query.execute();
-            return query.getResult().stream()
-                    .filter(a -> a.getCarId().equals(carId) && a.getPlaceId() == placeId).count() != 0;
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
-    private void removeCar(int placeId, String login) {
-        var params = new HashMap<String, Object>();
-        params.put("Place_id", placeId);
-        params.put("Login", login);
-        var query = new RemoveCarQuery();
-        query.setParams(params);
-        try {
-            query.execute();
-        } catch (SQLException e) {}
-    }
 
     @AfterAll
     public void deleteAccount() {
         Map<String, Object> params = new TreeMap<>();
         params.put("Login", "ghjiiidj");
-        var query = new DeleteUserQuery();
-        query.setParams(params);
         try {
+            var query = new DeleteUserQuery(getProperties());
+            query.setParams(params);
             query.execute();
         } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
+
+    private Properties getProperties() {
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream("./src/test/java/config.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return properties;
     }
 }

@@ -1,4 +1,4 @@
-package Servlets;
+package Servlets.Authorization;
 
 import Models.User;
 import SQLQuery.SignUpQuery;
@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.xml.bind.ValidationException;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -30,13 +31,14 @@ public class RegistrationServlet extends HttpServlet {
         params.put("Card_number", req.getParameter("cardNumber"));
         params.put("Login", req.getParameter("login"));
         params.put("Password", req.getParameter("password"));
-        var query = new SignUpQuery();
-        query.setParams(params);
+        var query = new SignUpQuery(req);
         try {
+            query.setParams(params);
             query.execute();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch ( ValidationException e) {
+            resp.getWriter().print("invalid field");
         }
-        resp.sendRedirect(req.getContextPath() + "/route-servlet");
     }
 }

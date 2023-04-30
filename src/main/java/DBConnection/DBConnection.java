@@ -1,19 +1,15 @@
 package DBConnection;
 
-//STEP 1. Import required packages
 
+import Props.PropertyLinker;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnection {
-
-    private final String DB_URL = "jdbc:postgresql://localhost/Parking";
-    private final String USER = "postgres";
-    private final String PASS = "admin";
     private Connection connection;
 
-    protected Connection getConnection() {
+    protected Connection getConnection(String url, String user, String password) {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -21,8 +17,16 @@ public class DBConnection {
         }
 
         try {
+            var connectionString = PropertyLinker.getProperty("connectionString");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        try {
             connection = DriverManager
-                    .getConnection(DB_URL, USER, PASS);
+                    .getConnection(url, user, password);
 
         } catch (SQLException e) {
             System.out.println("Connection Failed");

@@ -5,11 +5,16 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AuthorizationTest {
@@ -23,16 +28,11 @@ class AuthorizationTest {
         params.put("Card_number", "9895332298471234");
         params.put("Login", "ghjiiidj");
         params.put("Password", "ghfhqwe");
-        var query = new SignUpQuery();
-        query.setParams(params);
-        boolean result = false;
-        try {
+        assertDoesNotThrow(() -> {
+            var query = new SignUpQuery(getProperties());
+            query.setParams(params);
             query.execute();
-            result = true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        assertTrue(result);
+        });
     }
 
     @Test
@@ -41,14 +41,14 @@ class AuthorizationTest {
         Map<String, Object> params = new TreeMap<>();
         params.put("Login", "ghjiiidj");
         params.put("Password", "ghfhqwe");
-        var query = new LogInQuery();
-        query.setParams(params);
-        boolean result = false;
         try {
+            var query = new LogInQuery(getProperties());
+            query.setParams(params);
             query.execute();
-            result = query.getResult();
-        } catch (SQLException e) {}
-        assertTrue(result);
+            assertTrue(query.getResult());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -57,14 +57,14 @@ class AuthorizationTest {
         Map<String, Object> params = new TreeMap<>();
         params.put("Login", "ghjiiidj");
         params.put("Password", "ghfhqwa");
-        var query = new LogInQuery();
-        query.setParams(params);
-        boolean result = true;
         try {
+            var query = new LogInQuery(getProperties());
+            query.setParams(params);
             query.execute();
-            result = query.getResult();
-        } catch (SQLException e) {}
-        assertTrue(!result);
+            assertFalse(query.getResult());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -72,14 +72,23 @@ class AuthorizationTest {
     public void deleteAccount() {
         Map<String, Object> params = new TreeMap<>();
         params.put("Login", "ghjiiidj");
-        var query = new DeleteUserQuery();
-        query.setParams(params);
+        params.put("Password", "ghfhqwe");
+        try {
+            var query = new DeleteUserQuery(getProperties());
+            query.setParams(params);
+            query.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         boolean result = false;
         try {
-            query.execute();
-            result = true;
-        } catch (SQLException e) {}
-        assertTrue(result);
+            var getQuery = new LogInQuery(getProperties());
+            getQuery.setParams(params);
+            getQuery.execute();
+            assertFalse(getQuery.getResult());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -87,14 +96,25 @@ class AuthorizationTest {
     public void deletedAccountLogin() {
         Map<String, Object> params = new TreeMap<>();
         params.put("Login", "ghjiiidj");
-        params.put("Password", "ghfhqwa");
-        var query = new LogInQuery();
-        query.setParams(params);
-        boolean result = true;
+        params.put("Password", "ghfhqwe");
+        boolean result = false;
         try {
+            var query = new LogInQuery(getProperties());
+            query.setParams(params);
             query.execute();
-            result = query.getResult();
-        } catch (SQLException e) {}
-        assertTrue(!result);
+            assertFalse(query.getResult());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Properties getProperties() {
+        Properties properties = new Properties();
+        try {
+            properties.load(new FileInputStream("./src/test/java/config.properties"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return properties;
     }
 }

@@ -1,4 +1,4 @@
-package Servlets;
+package Servlets.Places;
 
 import Models.Park;
 import Models.ParkPlace;
@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.xml.bind.ValidationException;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -27,14 +28,18 @@ public class UpdateFieldServlet extends HttpServlet {
         System.out.println(name);
         GetDataQuery query = null;
         if (name.equals("getPlaces")) {
-            query = new FreePlacesQuery();
+            query = new FreePlacesQuery(request);
             var params = new HashMap<String, Object>();
             var parkId = request.getParameter("parkId");
             params.put("Park_id", parkId);
-            query.setParams(params);
+            try {
+                query.setParams(params);
+            } catch (ValidationException e) {
+                e.printStackTrace();
+            }
         }
         if (name.equals("getParks")) {
-            query = new AvailableParkQuery();
+            query = new AvailableParkQuery(request);
         }
         loadData(query, response.getWriter());
     }

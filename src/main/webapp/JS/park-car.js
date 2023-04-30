@@ -1,3 +1,5 @@
+let errorText;
+
 function getAllParks() {
     $.ajax({
         method : 'get',
@@ -52,18 +54,20 @@ function leaveCar() {
             placeId: $('#park_place').val(),
             carId: $('#car_id').val()
         },
-        success: getCarsUser
+        success:function (data) {
+            if (data == null || data === "") {
+                getCarsUser();
+                return;
+            }
+            errorText.html(data);
+        }
     });
 }
 
 function removeCar(placeId) {
     $.ajax({
-        method : 'post',
-        url : 'userPlaces-servlet',
-        data : {
-            type: 'delete',
-            placeId: placeId
-        },
+        method : 'delete',
+        url : 'userPlaces-servlet?' + $.param({ placeId: placeId }),
         success: getCarsUser
     });
 }
@@ -89,7 +93,7 @@ function getFooter() {
     return '<tr>' +
                 '<td><select id="park_id" onchange="getPlaces()"></select></td>' +
                 '<td><select id="park_place"></select></td>' +
-                '<td><input id="car_id" type="text" placeholder="А111AA111"></td>' +
+                '<td><input id="car_id" type="text" placeholder="А111AA111" onchange="resetError()"></td>' +
                 '<td><button type="submit" id="set_button" onclick="leaveCar()">Add</button></td>' +
             '</tr>'
 }
@@ -115,6 +119,10 @@ function getCarsUser() {
     });
 }
 
+function resetError() {
+    errorText.html('');
+}
+
 function deleteUser() {
     $.ajax({
         method: 'delete',
@@ -127,5 +135,6 @@ function deleteUser() {
 }
 
 $(document).ready(function() {
+    errorText = $('#error-text');
     getCarsUser();
 });

@@ -1,4 +1,4 @@
-package Servlets;
+package Servlets.Authorization;
 
 import Models.User;
 import SQLQuery.DeleteUserQuery;
@@ -20,10 +20,12 @@ public class AuthorizationServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        System.out.println(request.getServletContext().getRealPath("/config.properties"));
         request.getSession().removeAttribute("login");
         response.setContentType("text/html");
         request.setAttribute("user", new User());
         request.getRequestDispatcher("authorization.jsp").forward(request, response);
+
     }
 
     @Override
@@ -32,7 +34,7 @@ public class AuthorizationServlet extends HttpServlet {
         var login = req.getParameter("login");
         params.put("Login", login);
         params.put("Password", req.getParameter("password"));
-        var query = new LogInQuery();
+        var query = new LogInQuery(req);
         query.setParams(params);
         try {
             query.execute();
@@ -40,10 +42,13 @@ public class AuthorizationServlet extends HttpServlet {
                 var session = req.getSession();
                 session.setAttribute("login", login);
             }
+            else {
+                resp.getWriter().print("login or password isn't correct");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        resp.sendRedirect(req.getContextPath() + "/route-servlet");
+        //resp.sendRedirect(req.getContextPath() + "/route-servlet");
     }
 
     @Override
@@ -53,7 +58,7 @@ public class AuthorizationServlet extends HttpServlet {
         if(login == null || login.equals("")) {
             return;
         }
-        var query = new DeleteUserQuery();
+        var query = new DeleteUserQuery(req);
         var params = new HashMap<String, Object>();
         params.put("Login", login);
         query.setParams(params);

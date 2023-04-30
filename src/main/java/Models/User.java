@@ -1,6 +1,7 @@
 package Models;
 
 public class User {
+    //added id
     private String name;
     private String card;
     private String login;

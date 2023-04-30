@@ -1,23 +1,32 @@
 package SQLQuery.CRUDTemplates;
 
-import DBConnection.DBConnection;
-import SQLQuery.Interface.ISQLQuery;
-import java.sql.SQLException;
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
+import org.json.JSONObject;
 
-public abstract class SetDataQuery extends DBConnection implements ISQLQuery {
+import java.sql.SQLException;
+import java.util.Properties;
+
+public abstract class SetDataQuery extends SQLQuery {
 
     protected String sql;
 
-    @Override
+    public SetDataQuery(Properties properties) {
+        super(properties);
+    }
+
+    public SetDataQuery(HttpServletRequest request) {
+        super(request);
+    }
+
     public void execute() throws SQLException {
-        var connection = getConnection();
+        var connectionString = new JSONObject(properties.getProperty("connectionString"));
+        var url = connectionString.getString("source")+"/"+connectionString.getString("catalog");
+        var user = connectionString.getString("user");
+        var password = connectionString.getString("password");
+        var connection = getConnection(url, user, password);
         var stmt = connection.createStatement();
         connection.prepareStatement(sql);
         stmt.executeUpdate(sql);
         closeConnection();
     }
-
-    @Override
-    public abstract void setParams(Map<String, Object> params);
 }
