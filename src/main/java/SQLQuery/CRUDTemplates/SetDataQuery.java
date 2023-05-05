@@ -1,6 +1,5 @@
 package SQLQuery.CRUDTemplates;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
@@ -12,10 +11,6 @@ public abstract class SetDataQuery extends SQLQuery {
 
     public SetDataQuery(Properties properties) {
         super(properties);
-    }
-
-    public SetDataQuery(HttpServletRequest request) {
-        super(request);
     }
 
     public void execute() throws SQLException {

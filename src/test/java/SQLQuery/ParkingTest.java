@@ -1,69 +1,52 @@
 package SQLQuery;
 
+import Services.AuthorizationService;
+import Services.CarService;
 import jakarta.xml.bind.ValidationException;
 import org.junit.jupiter.api.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ParkingTest {
+public class ParkingTest extends BaseTest {
+
+    private CarService service;
 
     private static final String LOGIN = "ghjiiidj";
 
     @BeforeAll
     public void signUp() {
-        Map<String, Object> params = new TreeMap<>();
-        params.put("Name", "Федор");
-        params.put("Card_number", "9895332298471234");
-        params.put("Login", LOGIN);
-        params.put("Password", "ghfhqwe");
-        try {
-            var query = new SignUpQuery(getProperties());
-            query.setParams(params);
-            query.execute();
-        } catch (SQLException | ValidationException e) {
-            e.printStackTrace();
-        }
+        service = new CarService(getProperties());
+        var password = "ghfhqwe";
+        var cardNumber = "9895332298471234";
+        var name = "Федор";
+        assertDoesNotThrow(() -> {
+            new AuthorizationService(getProperties()).createUser(LOGIN, password, cardNumber, name);
+        });
     }
 
 
     @Test
     @Order(1)
     public void setCarInParkValid() {
-        var params = new HashMap<String, Object>();
-        params.put("Place_id", "13");
-        params.put("Login", LOGIN);
-        params.put("Car_id", "А111АА11");
+        String placeId = "13";
+        String carId = "А111АА11";
         assertDoesNotThrow(() -> {
-            var query = new LeaveCarQuery(getProperties());
-            query.setParams(params);
-            query.execute();
+            service.leaveCar(placeId, LOGIN, carId);
         });
     }
 
     @Test
     @Order(2)
     public void getCarInParkValid() {
-
-        var params = new HashMap<String, Object>();
-        params.put("Place_id", "13");
-        params.put("Login", LOGIN);
-        params.put("Car_id", "А111АА11");
-
         try {
-            var query = new UserPlacesQuery(getProperties());
-            query.setParams(params);
-            query.execute();
-            assertNotEquals(query.getResult().stream()
+            assertNotEquals(service.getUserCars(LOGIN).stream()
                     .filter(a -> a.getCarId().equals("А111АА11") && a.getPlaceId() == 13).count(), 0);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -73,24 +56,16 @@ public class ParkingTest {
     @Test
     @Order(3)
     public void removeCarFromParkInvalidLogin() {
-        var params = new HashMap<String, Object>();
-        params.put("Place_id", 13);
-        params.put("Login", "LOGIN");
-        params.put("Car_id", "А111АА11");
+        String placeId = "13";
+        String login = "LOGIN";
         try {
-            var query = new RemoveCarQuery(getProperties());
-            query.setParams(params);
-            query.execute();
+            service.removeCar(placeId, login);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-
         try {
-            var getQuery = new UserPlacesQuery(getProperties());
-            getQuery.setParams(params);
-            getQuery.execute();
-            assertEquals(getQuery.getResult().stream()
+            assertNotEquals(service.getUserCars(LOGIN).stream()
                     .filter(a -> a.getCarId().equals("А111АА11") && a.getPlaceId() == 13).count(), 0);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,24 +75,16 @@ public class ParkingTest {
     @Test
     @Order(4)
     public void getCarAfterRemoveValid() {
-        var params = new HashMap<String, Object>();
-        params.put("Place_id", 13);
-        params.put("Login", LOGIN);
-        params.put("Car_id", "А111АА11");
+        String placeId = "13";
         try {
-            var query = new RemoveCarQuery(getProperties());
-            query.setParams(params);
-            query.execute();
+            service.removeCar(placeId, LOGIN);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
 
         try {
-            var getQuery = new UserPlacesQuery(getProperties());
-            getQuery.setParams(params);
-            getQuery.execute();
-            assertEquals(getQuery.getResult().stream()
+            assertEquals(service.getUserCars(LOGIN).stream()
                     .filter(a -> a.getCarId().equals("А111АА11") && a.getPlaceId() == 13).count(), 0);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -126,51 +93,38 @@ public class ParkingTest {
 
     @Test
     public void setCarInParkInvalidCarId() {
-        var params = new HashMap<String, Object>();
-        params.put("Place_id", "13");
-        params.put("Login", LOGIN);
-        params.put("Car_id", "А111А11");
+        String placeId = "13";
+        String carId = "А111А11";
         assertThrows(ValidationException.class, () -> {
-            var query = new LeaveCarQuery(getProperties());
-            query.setParams(params);
-            query.execute();
+            service.leaveCar(placeId, LOGIN, carId);
         });
     }
 
 
     @Test
     public void setCarInParkInvalidPlace() {
-        var params = new HashMap<String, Object>();
-        params.put("Place_id", "113");
-        params.put("Login", LOGIN);
-        params.put("Car_id", "А111АА11");
-        assertThrows(ValidationException.class,() -> {
-            var query = new LeaveCarQuery(getProperties());
-            query.setParams(params);
-            query.execute();
+        String placeId = "113";
+        String carId = "А111АА11";
+        assertThrows(ValidationException.class, () -> {
+            service.leaveCar(placeId, LOGIN, carId);
         });
     }
 
 
     @Test
     public void setCarInParkInvalidLogin() {
-        var params = new HashMap<String, Object>();
-        params.put("Place_id", "13");
-        params.put("Login", "LOGIN");
-        params.put("Car_id", "А111АА11");
+        String placeId = "13";
+        String carId = "А111АА11";
+        String login = "LOGIN";
         try {
-            var query = new LeaveCarQuery(getProperties());
-            query.setParams(params);
-            query.execute();
+            service.leaveCar(placeId, login, carId);
         } catch (ValidationException | SQLException e) {
             e.printStackTrace();
+            return;
         }
 
         try {
-            var getQuery = new UserPlacesQuery(getProperties());
-            getQuery.setParams(params);
-            getQuery.execute();
-            assertEquals(getQuery.getResult().stream()
+            assertEquals(service.getUserCars(login).stream()
                     .filter(a -> a.getCarId().equals("А111АА11") && a.getPlaceId() == 13).count(), 0);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -180,24 +134,13 @@ public class ParkingTest {
 
     @AfterAll
     public void deleteAccount() {
-        Map<String, Object> params = new TreeMap<>();
-        params.put("Login", "ghjiiidj");
+        var password = "ghfhqwe";
+        var cardNumber = "9895332298471234";
+        var name = "Федор";
         try {
-            var query = new DeleteUserQuery(getProperties());
-            query.setParams(params);
-            query.execute();
+            new AuthorizationService(getProperties()).deleteUser(LOGIN);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    private Properties getProperties() {
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream("./src/test/java/config.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return properties;
     }
 }

@@ -2,7 +2,6 @@ package SQLQuery;
 
 import Models.ParkPlace;
 import SQLQuery.CRUDTemplates.GetDataQuery;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,15 +14,11 @@ public class FreePlacesQuery extends GetDataQuery<List<ParkPlace>> {
         super(properties);
     }
 
-    public FreePlacesQuery(HttpServletRequest request) {
-        super(request);
-    }
-
     @Override
     public void setParams(Map params) {
         sql = "SELECT DISTINCT \"Place_id\", \"Place_number\" FROM \"park_place\"\n" +
                 "WHERE \"User_id\" IS NULL AND \"Park_id\" = " + params.get("Park_id") +
-                "ORDER BY \"Place_id\"";
+                " ORDER BY \"Place_id\"";
     }
 
     @Override

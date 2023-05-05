@@ -2,7 +2,6 @@ package SQLQuery;
 
 import SQLQuery.CRUDTemplates.SetDataQuery;
 import Validator.CarIdValidator;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.xml.bind.ValidationException;
 
 import java.util.Map;
@@ -11,10 +10,6 @@ import java.util.Properties;
 public class LeaveCarQuery extends SetDataQuery {
     public LeaveCarQuery(Properties properties) {
         super(properties);
-    }
-
-    public LeaveCarQuery(HttpServletRequest request) {
-        super(request);
     }
 
     @Override

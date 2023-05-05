@@ -2,7 +2,6 @@ package SQLQuery;
 
 import Models.Park;
 import SQLQuery.CRUDTemplates.GetDataQuery;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,12 +13,6 @@ public class AvailableParkQuery extends GetDataQuery<List<Park>> {
 
     public AvailableParkQuery(Properties properties) {
         super(properties);
-        setParams(null);
-    }
-
-
-    public AvailableParkQuery(HttpServletRequest request) {
-        super(request);
         setParams(null);
     }
 

@@ -2,7 +2,6 @@ package SQLQuery;
 
 import Models.ParkPlace;
 import SQLQuery.CRUDTemplates.GetDataQuery;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.SQLException;
 import java.util.LinkedList;
@@ -13,10 +12,6 @@ import java.util.Properties;
 public class UserPlacesQuery extends GetDataQuery<List<ParkPlace>> {
     public UserPlacesQuery(Properties properties) {
         super(properties);
-    }
-
-    public UserPlacesQuery(HttpServletRequest request) {
-        super(request);
     }
 
     @Override

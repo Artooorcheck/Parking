@@ -1,22 +1,26 @@
 package Servlets.Authorization;
 
 import Models.User;
-import SQLQuery.DeleteUserQuery;
-import SQLQuery.LogInQuery;
+import Services.AuthorizationService;
+import Servlets.BaseServlet;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 @WebServlet(name = "authorizationServlet", value = "/authorization-servlet")
-public class AuthorizationServlet extends HttpServlet {
+public class AuthorizationServlet extends BaseServlet {
+
+    private AuthorizationService service;
+
+    @Override
+    public  void init(ServletConfig config) {
+        service = new AuthorizationService(getProperties(config));
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -30,15 +34,10 @@ public class AuthorizationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        Map<String, Object> params = new TreeMap<>();
         var login = req.getParameter("login");
-        params.put("Login", login);
-        params.put("Password", req.getParameter("password"));
-        var query = new LogInQuery(req);
-        query.setParams(params);
+        var password = req.getParameter("password");
         try {
-            query.execute();
-            if (query.getResult()) {
+            if (service.loginIsExist(login, password)) {
                 var session = req.getSession();
                 session.setAttribute("login", login);
             }
@@ -58,12 +57,8 @@ public class AuthorizationServlet extends HttpServlet {
         if(login == null || login.equals("")) {
             return;
         }
-        var query = new DeleteUserQuery(req);
-        var params = new HashMap<String, Object>();
-        params.put("Login", login);
-        query.setParams(params);
         try {
-            query.execute();
+            service.deleteUser((String) login);
             session.removeAttribute("login");
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,6 +1,5 @@
 package SQLQuery.CRUDTemplates;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 
 import java.sql.ResultSet;
@@ -14,10 +13,6 @@ public abstract class GetDataQuery<TResult> extends SQLQuery {
 
     public GetDataQuery(Properties properties) {
         super(properties);
-    }
-
-    public GetDataQuery(HttpServletRequest request) {
-        super(request);
     }
 
     public void execute() throws SQLException {
